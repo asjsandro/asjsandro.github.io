@@ -1,8 +1,9 @@
 // Lista de arquivos. No caso do GitHub Pages, é estática.
 // Caso estivesse em um servidor, poderia ser gerada dinamicamente.
 const files = [
-    "arquivo1.pdf",
-    "arquivo2.txt"
+    "the.chemistry.of.death.s01e02.multi.1080p.web.x264-amb3r[eztv.re].mkv.torrent",
+    "the.chemistry.of.death.s01e03.multi.1080p.web.x264-amb3r[eztv.re].mkv.torrent",
+    "The.Chemistry.Of.Death.S01.1080p.AMZN.WEBRip.DDP5.1.x264-NTb[eztv.re].torrent"
     // Adicione outros arquivos conforme necessário
 ];
 
