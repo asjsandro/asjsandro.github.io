@@ -1,6 +1,6 @@
-const repoOwner = "asjsandro";
-const repoName = "asjsandro.github.io";
-const folderPath = "files";
+const repoOwner = 'asjsandro';
+const repoName = 'asjsandro.github.io';
+const folderPath = 'files';
 
 const filesListDiv = document.getElementById("filesList");
 
