@@ -3,53 +3,12 @@ const BRANCH = "main";
 const FILES_DIRECTORY = "downloads/arquivos/";
 const API_URL = `https://api.github.com/repos/${REPOSITORY}/git/trees/${BRANCH}?recursive=1`;
 
-const grid = document.getElementById("fileGrid");
-const searchInput = document.getElementById("searchInput");
-const resultCount = document.getElementById("resultCount");
+const entries = document.getElementById("entries");
+const breadcrumbs = document.getElementById("breadcrumbs");
 const loadStatus = document.getElementById("loadStatus");
-const emptyState = document.getElementById("emptyState");
-const errorState = document.getElementById("errorState");
 const errorMessage = document.getElementById("errorMessage");
-let arquivos = [];
-
-function renderizarArquivos() {
-  const termo = searchInput.value.trim().toLocaleLowerCase("pt-BR");
-  const filtrados = arquivos.filter(item =>
-    `${item.pasta} ${item.nome}`.toLocaleLowerCase("pt-BR").includes(termo)
-  );
-  const grupos = new Map();
-
-  filtrados.forEach(item => {
-    if (!grupos.has(item.pasta)) grupos.set(item.pasta, []);
-    grupos.get(item.pasta).push(item);
-  });
-
-  const pastas = Array.from(grupos.keys()).sort((a, b) => a.localeCompare(b, "pt-BR"));
-  grid.innerHTML = pastas.map(pasta => `
-    <section class="folder-group" aria-label="Pasta ${escapar(pasta)}">
-      <div class="folder-heading">
-        <h3>${escapar(pasta)}</h3>
-        <span>${grupos.get(pasta).length} ${grupos.get(pasta).length === 1 ? "arquivo" : "arquivos"}</span>
-      </div>
-      <ul class="file-list">
-        ${grupos.get(pasta).map(item => `
-          <li class="file-row">
-            <div class="file-info">
-              <span class="file-name">${escapar(item.nome)}</span>
-              <span class="file-size">${formatarTamanho(item.tamanho)}</span>
-            </div>
-            <a class="download-link" href="${escapar(caminhoRelativo(item.caminho))}" download aria-label="Baixar ${escapar(item.nome)}">
-              Baixar <span aria-hidden="true">↓</span>
-            </a>
-          </li>
-        `).join("")}
-      </ul>
-    </section>
-  `).join("");
-
-  resultCount.textContent = `${filtrados.length} ${filtrados.length === 1 ? "arquivo" : "arquivos"}`;
-  emptyState.hidden = filtrados.length !== 0;
-}
+const emptyState = document.getElementById("emptyState");
+let arquivos = null;
 
 function escapar(valor) {
   return String(valor).replace(/[&<>"']/g, caractere => ({
@@ -57,8 +16,23 @@ function escapar(valor) {
   })[caractere]);
 }
 
-function caminhoRelativo(caminho) {
-  return `arquivos/${caminho.slice(FILES_DIRECTORY.length).split("/").map(encodeURIComponent).join("/")}`;
+function obterCaminhoAtual() {
+  try {
+    return decodeURIComponent(location.hash.slice(1)).replace(/^\/+|\/+$/g, "");
+  } catch {
+    return null;
+  }
+}
+
+function criarBreadcrumbs(caminho) {
+  const partes = caminho ? caminho.split("/") : [];
+  breadcrumbs.innerHTML = [
+    '<a href="#/">Arquivos</a>',
+    ...partes.map((parte, indice) => {
+      const destino = partes.slice(0, indice + 1).join("/");
+      return `<span aria-hidden="true">/</span><a href="#${encodeURIComponent(destino)}">${escapar(parte)}</a>`;
+    })
+  ].join("");
 }
 
 function formatarTamanho(bytes) {
@@ -72,6 +46,67 @@ function formatarTamanho(bytes) {
     unidade += 1;
   }
   return `${new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 }).format(tamanho)} ${unidades[unidade]}`;
+}
+
+function renderizarPasta() {
+  if (arquivos === null) return;
+
+  const caminho = obterCaminhoAtual();
+  errorMessage.hidden = true;
+  emptyState.hidden = true;
+  entries.innerHTML = "";
+
+  if (caminho === null) {
+    errorMessage.textContent = "O caminho da pasta é inválido.";
+    errorMessage.hidden = false;
+    return;
+  }
+
+  if (caminho && !arquivos.some(item => item.pasta === caminho || item.pasta.startsWith(`${caminho}/`))) {
+    criarBreadcrumbs("");
+    errorMessage.textContent = "Esta pasta não foi encontrada.";
+    errorMessage.hidden = false;
+    return;
+  }
+
+  criarBreadcrumbs(caminho);
+  const prefixo = caminho ? `${caminho}/` : "";
+  const subpastas = new Set();
+  const arquivosDiretos = [];
+
+  arquivos.forEach(item => {
+    if (item.pasta !== caminho && !item.pasta.startsWith(prefixo)) return;
+    const restante = item.pasta === caminho ? "" : item.pasta.slice(prefixo.length);
+    if (!restante) {
+      arquivosDiretos.push(item);
+      return;
+    }
+    subpastas.add(restante.split("/")[0]);
+  });
+
+  const itens = [
+    ...Array.from(subpastas)
+      .sort((a, b) => a.localeCompare(b, "pt-BR"))
+      .map(nome => {
+        const destino = caminho ? `${caminho}/${nome}` : nome;
+        return `<li><a class="entry-link" href="#${encodeURIComponent(destino)}">${escapar(nome)}/</a></li>`;
+      }),
+    ...arquivosDiretos
+      .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"))
+      .map(item => `
+        <li>
+          <a class="entry-link" href="${escapar(caminhoRelativo(item.caminho))}" download>${escapar(item.nome)}</a>
+          <span class="entry-size">${formatarTamanho(item.tamanho)}</span>
+        </li>
+      `)
+  ];
+
+  entries.innerHTML = itens.join("");
+  emptyState.hidden = itens.length > 0;
+}
+
+function caminhoRelativo(caminho) {
+  return `arquivos/${caminho.slice(FILES_DIRECTORY.length).split("/").map(encodeURIComponent).join("/")}`;
 }
 
 async function carregarArquivos() {
@@ -98,23 +133,21 @@ async function carregarArquivos() {
         return {
           caminho: item.path,
           nome: caminhoNaBiblioteca.slice(separador + 1),
-          pasta: separador === -1 ? "Arquivos" : caminhoNaBiblioteca.slice(0, separador),
+          pasta: separador === -1 ? "" : caminhoNaBiblioteca.slice(0, separador),
           tamanho: item.size
         };
-      })
-      .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+      });
 
     loadStatus.hidden = true;
-    renderizarArquivos();
+    renderizarPasta();
   } catch (erro) {
     console.error("Erro ao carregar os arquivos do GitHub:", erro);
     loadStatus.hidden = true;
-    grid.hidden = true;
-    errorState.hidden = false;
     errorMessage.textContent = `${erro.message} Verifique a conexão e se o repositório está público.`;
+    errorMessage.hidden = false;
   }
 }
 
-searchInput.addEventListener("input", renderizarArquivos);
+window.addEventListener("hashchange", renderizarPasta);
 document.getElementById("year").textContent = new Date().getFullYear();
 carregarArquivos();

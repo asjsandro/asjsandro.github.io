@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Arquivos organizados por pastas para pesquisar e baixar.">
+  <meta name="description" content="Navegue pelas pastas e baixe os arquivos disponíveis.">
   <meta name="theme-color" content="#101827">
   <title>Central de Downloads</title>
   <link rel="stylesheet" href="assets/style.css">
@@ -24,47 +24,13 @@
   </header>
 
   <main class="container">
-    <section class="hero">
-      <div class="hero-content">
-        <span class="eyebrow">REPOSITÓRIO DE ARQUIVOS</span>
-        <h1>Encontre o que<br><span>você precisa.</span></h1>
-        <p>Os arquivos são organizados pelas pastas do repositório. Adicione um arquivo e ele aparecerá aqui automaticamente após a publicação.</p>
-        <a class="hero-button" href="#lista-arquivos">Explorar downloads <span aria-hidden="true">↓</span></a>
-      </div>
-      <div class="hero-art" aria-hidden="true">
-        <div class="orb orb-one"></div><div class="orb orb-two"></div>
-        <div class="download-card">
-          <div class="file-icon">↓</div>
-          <div class="fake-lines"><i></i><i></i><i></i></div>
-          <span class="card-check">✓</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="toolbar" id="lista-arquivos">
-      <div>
-        <span class="eyebrow">BIBLIOTECA</span>
-        <h2>Arquivos disponíveis</h2>
-        <p class="section-subtitle">Navegue pelas pastas ou pesquise pelo nome.</p>
-      </div>
-      <label class="search-box">
-        <span aria-hidden="true">⌕</span>
-        <input id="searchInput" type="search" placeholder="Pesquisar arquivos..." autocomplete="off">
-      </label>
-    </section>
-
-    <div class="results-line"><span id="resultCount">0 arquivos</span><span>Downloads públicos</span></div>
-    <p class="load-status" id="loadStatus" role="status">Carregando arquivos...</p>
-    <section class="folder-list" id="fileGrid" aria-live="polite"></section>
-    <div class="empty-state" id="emptyState" hidden>
-      <div class="empty-icon">⌕</div>
-      <h3>Nenhum arquivo encontrado</h3>
-      <p>Adicione arquivos em downloads/arquivos/ ou tente outra pesquisa.</p>
-    </div>
-    <div class="error-state" id="errorState" role="alert" hidden>
-      <h3>Não foi possível carregar os arquivos</h3>
-      <p id="errorMessage"></p>
-    </div>
+    <h1>Arquivos para download</h1>
+    <p class="intro">Escolha uma pasta para navegar pelos arquivos.</p>
+    <nav class="breadcrumbs" id="breadcrumbs" aria-label="Caminho da pasta"></nav>
+    <p class="status" id="loadStatus" role="status">Carregando pastas...</p>
+    <p class="status error" id="errorMessage" role="alert" hidden></p>
+    <ul class="entries" id="entries" aria-live="polite"></ul>
+    <p class="status" id="emptyState" hidden>Esta pasta não contém arquivos.</p>
 
     <aside class="notice">
       <span class="notice-icon">i</span>

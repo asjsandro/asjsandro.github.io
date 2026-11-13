@@ -38,7 +38,7 @@ Se seu site usa um domínio personalizado, a página também ficará disponível
 1. Crie uma pasta dentro de `downloads/arquivos/` para organizar seus arquivos.
 2. Coloque os arquivos para download dentro da pasta. Você também pode criar subpastas.
 3. Faça o commit e publique as alterações na branch `main`.
-4. A página lista automaticamente os arquivos e os agrupa pelas pastas. Não é necessário editar o JavaScript nem cadastrar os arquivos manualmente.
+4. A página mostra links para as subpastas. Ao abrir uma pasta, aparecem as subpastas e os arquivos daquele nível; cada arquivo tem um link de download. Não é necessário editar o JavaScript nem cadastrar os arquivos manualmente.
 
 Exemplo:
 
