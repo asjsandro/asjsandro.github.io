@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Central de downloads: programas, utilitários, atualizações e documentação.">
+  <meta name="theme-color" content="#101827">
+  <title>Central de Downloads</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="./" aria-label="Central de Downloads - início">
+        <span class="brand-mark" aria-hidden="true">↓</span>
+        <span class="brand-copy">
+          <strong>Central de Downloads</strong>
+          <small>Arquivos e ferramentas</small>
+        </span>
+      </a>
+      <a class="home-link" href="../">Voltar à homepage <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-content">
+        <span class="eyebrow">REPOSITÓRIO DE ARQUIVOS</span>
+        <h1>Encontre o que<br><span>você precisa.</span></h1>
+        <p>Baixe programas, utilitários, atualizações e documentos disponibilizados nesta página.</p>
+        <a class="hero-button" href="#lista-arquivos">Explorar downloads <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orb orb-one"></div><div class="orb orb-two"></div>
+        <div class="download-card">
+          <div class="file-icon">↓</div>
+          <div class="fake-lines"><i></i><i></i><i></i></div>
+          <span class="card-check">✓</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="toolbar" id="lista-arquivos">
+      <div>
+        <span class="eyebrow">BIBLIOTECA</span>
+        <h2>Arquivos disponíveis</h2>
+        <p class="section-subtitle">Selecione uma categoria ou pesquise pelo nome.</p>
+      </div>
+      <label class="search-box">
+        <span aria-hidden="true">⌕</span>
+        <input id="searchInput" type="search" placeholder="Pesquisar arquivos..." autocomplete="off">
+      </label>
+    </section>
+
+    <nav class="filters" aria-label="Filtrar por categoria" id="filters">
+      <button class="filter active" data-filter="todos" type="button">Todos</button>
+      <button class="filter" data-filter="programas" type="button">Programas</button>
+      <button class="filter" data-filter="utilitarios" type="button">Utilitários</button>
+      <button class="filter" data-filter="documentos" type="button">Documentos</button>
+      <button class="filter" data-filter="atualizacoes" type="button">Atualizações</button>
+    </nav>
+
+    <div class="results-line"><span id="resultCount">0 arquivos</span><span>Downloads públicos</span></div>
+    <section class="file-grid" id="fileGrid" aria-live="polite"></section>
+    <div class="empty-state" id="emptyState" hidden>
+      <div class="empty-icon">⌕</div>
+      <h3>Nenhum arquivo encontrado</h3>
+      <p>Tente outro termo ou selecione uma categoria diferente.</p>
+    </div>
+
+    <aside class="notice">
+      <span class="notice-icon">i</span>
+      <p><strong>Importante:</strong> baixe arquivos somente se confiar na origem. Verifique os arquivos com seu antivírus antes de executá-los.</p>
+    </aside>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span>© <span id="year"></span> Central de Downloads</span>
+      <span>Disponibilizado via GitHub Pages</span>
+    </div>
+  </footer>
+</body>
+</html>
